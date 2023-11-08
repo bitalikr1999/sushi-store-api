@@ -1,0 +1,6 @@
+export * from './product-categories-service.interface'
+export * from './product-category.interface'
+export * from './product-repository.interface'
+export * from './product-service.interface'
+export * from './product.interface'
+export * from './products-variants.interface'

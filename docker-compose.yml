@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+    # dasushi-api:
+    #     build:
+    #         context: ./
+    #         dockerfile: Dockerfile
+    #     expose:
+    #         - 3000
+    #     ports:
+    #         - 3000:3000
+    #     depends_on:
+    #         - dasushi-postgres
+    #         - dasushi-redis
+    #         - dasushi-minio
+    #     links:
+    #         - dasushi-postgres
+    #         - dasushi-redis
+    #         - dasushi-minio
+    #     volumes:
+    #         - ./:/home/node/app
+    #     command: npm run start
+
+    dasushi-postgres:
+        image: postgres:11
+        restart: always
+
+        ports:
+            - 5432:5432
+
+        environment:
+            POSTGRES_PASSWORD: ${DATABASE_PASS}
+            POSTGRES_USER: ${DATABASE_USER}
+            POSTGRES_DB: ${DATABASE_DB}
+
+    dasushi-redis:
+        image: 'redis:4-alpine'
+        command: redis-server --requirepass ${REDIS_PASS}
+        ports:
+            - '6379:6379'
+
+    dasushi-minio:
+        hostname: dasushi-minio
+        image: quay.io/minio/minio:RELEASE.2023-04-07T05-28-58Z
+        container_name: dasushi-minio
+
+        volumes:
+            - './dasushiucket/data/:/data'
+            - './dasushiucket/config:/root/.minio'
+        ports:
+            - 5003:9000
+            - 5004:9001
+        environment:
+            MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+            MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+        command: server --console-address ":9001"  /data
+
+    dasushi-createbuckets:
+        image: minio/mc
+        depends_on:
+            - dasushi-minio
+        entrypoint: >
+            /bin/sh -c " sleep 10; /usr/bin/mc config host add data http://${MINIO_CREATE_BUCKET_HOST}:${MINIO_CREATE_BUCKET_PORT} ${MINIO_ACCESS_KEY} ${MINIO_SECRET_KEY}; /usr/bin/mc mb data/${MINIO_BUCKET}; /usr/bin/mc policy set public data/${MINIO_BUCKET}; exit 0; "
+    dasushi-imgproxy:
+        image: 'darthsim/imgproxy:latest'
+        ports:
+            - '5005:8080'
+        depends_on:
+            - dasushi-minio
+        links:
+            - dasushi-minio
+        environment:
+            IMGPROXY_KEY: ${IMGPROXY_KEY}
+            IMGPROXY_SALT: ${IMGPROXY_SALT}
+            IMGPROXY_MAX_SRC_FILE_SIZE: 10485760
