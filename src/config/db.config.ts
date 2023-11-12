@@ -8,6 +8,7 @@ import { ORDERS_ENTITIES } from 'src/domain/orders/entities'
 import { PAGES_ENTITIES } from 'src/domain/pages/entity'
 import { POSTS_ENITIES } from 'src/domain/posts/entity'
 import { PRODUCTS_ENTITIES } from 'src/domain/products/entities'
+import { SCHEDULE_ENTITIES } from 'src/domain/schedule/entites'
 import { SESSIONS_ENTITIES } from 'src/domain/sessions/entities'
 import { SETTINGS_ENTITES } from 'src/domain/settings/entities'
 import { SHIPPING_ENTITIES } from 'src/domain/shippings/entities'
@@ -42,6 +43,7 @@ export const getDatabaseConfig = (): Parameters<(typeof DatabaseModule)['forRoot
 			...SHIPPING_ENTITIES,
 			...SETTINGS_ENTITES,
 			...NP_ENTITIES,
+			...SCHEDULE_ENTITIES,
 		],
 	]
 }

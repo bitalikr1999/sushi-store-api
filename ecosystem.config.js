@@ -6,7 +6,7 @@ module.exports = {
 			node_args: '-r dotenv/config',
 			watch: true,
 			ignore_watch: [
-				'zbucket',
+				'dasushiucket',
 				'node_modules',
 				'.git',
 				'.husky',

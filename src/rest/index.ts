@@ -10,11 +10,13 @@ import { RestAdminPostTypeModule } from './_admin/post-type/post-type.module'
 import { RestAdminPostModule } from './_admin/post/post.module'
 import { RestAdminProductCategoriesModule } from './_admin/products-categories/products-categories.module'
 import { RestAdminProductsModule } from './_admin/products/products.module'
+import { RestAdminScheduleModule } from './_admin/schedule/schedule.module'
 import { RestAdminSettingsModule } from './_admin/settings/settings.module'
 import { RestAdminUsersModule } from './_admin/users/admin-users.module'
 import { ApiBucketModule } from './_api/bucket/bucket.module'
 import { ApiPublicOrdersModule } from './_api/orders/orders.module'
 import { ApiProductsModule } from './_api/products/products.module'
+import { RestApiScheduleModule } from './_api/schedule/schedule.module'
 
 import { AccountModule } from './account/app-account.module'
 import { AuthModule } from './auth/auth.module'
@@ -40,8 +42,10 @@ export const REST_MODULES = () => [
 	RestAdminOrdersModule.forRoot(),
 	RestAdminMenuModule.forFeature(),
 	RestAdminSettingsModule.forRoot(),
+	RestAdminScheduleModule.forRoot(),
 
 	ApiProductsModule.forRoot(),
 	ApiBucketModule.forRoot(),
 	ApiPublicOrdersModule.forRoot(),
+	RestApiScheduleModule.forRoot(),
 ]
