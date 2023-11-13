@@ -50,56 +50,57 @@ export class BucketService implements IBucketService {
 				where: { id: item.productId },
 				relations: ['previewMedia', 'translations'],
 			})
+			if (product) {
+				const translate = getTranslate(product.translations, Lang.uk)
 
-			const translate = getTranslate(product.translations, Lang.uk)
+				product.translations = null
+				product.previewMedia.path = transformFileUrl(product.previewMedia.url)
 
-			product.translations = null
-			product.previewMedia.path = transformFileUrl(product.previewMedia.url)
+				const content = await this.contentFieldsRepository.find({
+					where: {
+						parentId: item.productId,
+						parentTable: 'products',
+					},
+				})
+				product.content = prepareContent(content, Lang.uk)
 
-			const content = await this.contentFieldsRepository.find({
-				where: {
-					parentId: item.productId,
-					parentTable: 'products',
-				},
-			})
-			product.content = prepareContent(content, Lang.uk)
+				brutoAmount = formatPrice(Number(product.price) * Number(item.count))
 
-			brutoAmount = formatPrice(Number(product.price) * Number(item.count))
-
-			if (product.discount > discountConfig.discount) {
-				discountAmount = formatPrice((product.discount * brutoAmount) / 100)
-				discountPercent = product.discount
-			} else if (item.count >= discountConfig.needCount) {
-				discountAmount = formatPrice((discountConfig.discount * brutoAmount) / 100)
-				discountPercent = discountConfig.discount
-			}
-			nettoAmount = formatPrice(brutoAmount - discountAmount)
-
-			result.brutoAmount += brutoAmount
-			result.nettoAmount += nettoAmount
-			result.discountAmount += discountAmount
-
-			let variant: IProductVariant = null
-
-			try {
-				if (item.variant) {
-					variant = await this.productsVariantsRepository.findOneBy({
-						id: item.variant,
-					})
+				if (product.discount > discountConfig.discount) {
+					discountAmount = formatPrice((product.discount * brutoAmount) / 100)
+					discountPercent = product.discount
+				} else if (item.count >= discountConfig.needCount) {
+					discountAmount = formatPrice((discountConfig.discount * brutoAmount) / 100)
+					discountPercent = discountConfig.discount
 				}
-			} catch (e) {}
+				nettoAmount = formatPrice(brutoAmount - discountAmount)
 
-			result.products.push({
-				...product,
-				count: item.count,
-				translate,
-				brutoAmount,
-				nettoAmount,
-				discountAmount,
-				discountPercent,
-				variant,
-				link: `/products/single/${product.key}`,
-			})
+				result.brutoAmount += brutoAmount
+				result.nettoAmount += nettoAmount
+				result.discountAmount += discountAmount
+
+				let variant: IProductVariant = null
+
+				try {
+					if (item.variant) {
+						variant = await this.productsVariantsRepository.findOneBy({
+							id: item.variant,
+						})
+					}
+				} catch (e) {}
+
+				result.products.push({
+					...product,
+					count: item.count,
+					translate,
+					brutoAmount,
+					nettoAmount,
+					discountAmount,
+					discountPercent,
+					variant,
+					link: `/products/single/${product.key}`,
+				})
+			}
 		}
 
 		return result
