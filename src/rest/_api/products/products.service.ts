@@ -84,7 +84,6 @@ export class ApiProductsService {
 			items[index].inStock = Boolean(it.countInStock)
 			delete items[index].translations
 		}
-		console.log(items)
 
 		return {
 			items,

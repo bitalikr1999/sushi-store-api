@@ -42,7 +42,7 @@ export class RestProductsService {
 		if (pagination.searchString) {
 			query.andWhere(
 				new Brackets(qb => {
-					qb.where('it.name ILIKE :searchString', {
+					qb.where('translations.name ILIKE :searchString', {
 						searchString: prepareSearchString(pagination.searchString),
 					})
 				}),
