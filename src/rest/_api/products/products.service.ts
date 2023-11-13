@@ -12,6 +12,7 @@ import {
 import {
 	IPagination,
 	Lang,
+	NotFoundException,
 	getTranslate,
 	paginateAndGetMany,
 	prepareSearchString,
@@ -93,8 +94,12 @@ export class ApiProductsService {
 			.createQueryBuilder('it')
 			.leftJoinAndSelect('it.translations', 'translations')
 
-		if (dto.parentId) {
-			query.where('it.parentId = :parentId', { parentId: dto.parentId })
+		if (dto.parentKey) {
+			const category = await this.productCategoriesRepository.findOneBy({
+				key: dto.parentKey,
+			})
+			if (!category) throw new NotFoundException()
+			query.where('it.parentId = :parentId', { parentId: category.id })
 		} else {
 			query.where('it.parentId IS NULL')
 		}
@@ -103,6 +108,7 @@ export class ApiProductsService {
 
 		items.forEach((it, i, arr) => {
 			arr[i].translate = getTranslate(it.translations, Lang.uk)
+			arr[i].translations = null
 		})
 
 		return items
