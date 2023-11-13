@@ -16,7 +16,7 @@ import {
 	paginateAndGetMany,
 	prepareSearchString,
 } from 'src/shared'
-import { GetProductsParamsDto } from './dto'
+import { GetProductsCategoriesParamsDto, GetProductsParamsDto } from './dto'
 import { Brackets } from 'typeorm'
 import { transformFileUrl } from 'src/shared/transforms'
 import { prepareContent } from 'src/domain/content/helpers'
@@ -26,9 +26,6 @@ export class ApiProductsService {
 	constructor(
 		@Inject(PRODUCTS_REPOSITORY)
 		private readonly productsRepository: IProductsRepository,
-
-		@Inject(GALLERY_SERVICE)
-		private readonly galleryService: IGalleryService,
 
 		@Inject(CONTENT_FIELDS_REPOSITORY)
 		private readonly contentFieldsRepository: IContentFieldRepository,
@@ -89,5 +86,25 @@ export class ApiProductsService {
 			items,
 			count,
 		}
+	}
+
+	public async getCategories(dto: GetProductsCategoriesParamsDto) {
+		const query = this.productCategoriesRepository
+			.createQueryBuilder('it')
+			.leftJoinAndSelect('it.translations', 'translations')
+
+		if (dto.parentId) {
+			query.where('it.parentId = :parentId', { parentId: dto.parentId })
+		} else {
+			query.where('it.parentId IS NULL')
+		}
+
+		const items = await query.getMany()
+
+		items.forEach((it, i, arr) => {
+			arr[i].translate = getTranslate(it.translations, Lang.uk)
+		})
+
+		return items
 	}
 }
