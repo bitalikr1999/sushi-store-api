@@ -8,7 +8,7 @@ export const ReqPagination = createParamDecorator(
 		const query = {
 			...(req.query as any),
 			page: req.query.page ? req.query.page : 1,
-			limit: req.query.limit ? req.query.limit : 12,
+			limit: req.query.limit ? req.query.limit : 100,
 		}
 		return {
 			limit: query.limit,
