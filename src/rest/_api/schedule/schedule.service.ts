@@ -19,8 +19,8 @@ export class RestApiScheduleService {
 			? shift
 			: {
 					date: new Date(),
-					start: 1030,
-					end: 2130,
+					start: 1100,
+					end: 2100,
 					isClosed: false,
 			  }
 	}

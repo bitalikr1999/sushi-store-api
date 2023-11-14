@@ -4,7 +4,7 @@ import {
 	InternalServerErrorException,
 	Inject,
 } from '@nestjs/common'
-import { Client, CopyConditions } from 'minio'
+import { Client, ClientOptions, CopyConditions } from 'minio'
 import { UPLOAD_IMAGE_FILE_TYPES } from 'src/shared/consts'
 import { FilesStorage } from 'src/shared/namespace'
 import { FILE_STORAGE_OPTIONS } from '../consts'
@@ -19,7 +19,7 @@ export class FileStorageService implements FilesStorage.IFilesStorageService {
 	private isAwsStorage = false
 
 	constructor(@Inject(FILE_STORAGE_OPTIONS) options: IFilesStorageOptions) {
-		const params: any = {
+		const params: ClientOptions = {
 			endPoint: options.host,
 			useSSL: String(options.useSSL) === 'true' ? true : false,
 			accessKey: options.accessKey,

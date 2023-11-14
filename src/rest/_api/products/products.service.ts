@@ -47,8 +47,11 @@ export class ApiProductsService {
 				key: params.categoryKey,
 			})
 
+			const categoriesIds = [category.id]
+			if (Array.isArray(category.path)) categoriesIds.push(...category.path)
+
 			query.andWhere('(it.categoriesIds)::text[] @> ARRAY[:...categoriesIds]', {
-				categoriesIds: [category.id],
+				categoriesIds,
 			})
 		}
 
