@@ -49,7 +49,7 @@ export class ApiProductsService {
 
 			const childCategories = await this.productCategoriesRepository
 				.createQueryBuilder('it')
-				.where('(it.path)::numeric[] @> ARRAY(:...)::numeric[]')
+				.where('(it.path)::numeric[] @> ARRAY(:id)::numeric[]', { id: category.id })
 				.getMany()
 
 			const categoriesIds = [category.id]
