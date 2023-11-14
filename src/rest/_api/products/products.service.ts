@@ -47,8 +47,14 @@ export class ApiProductsService {
 				key: params.categoryKey,
 			})
 
+			const childCategories = await this.productCategoriesRepository
+				.createQueryBuilder('it')
+				.where('(it.path)::numeric[] @> ARRAY(:...)::numeric[]')
+				.getMany()
+
 			const categoriesIds = [category.id]
-			if (Array.isArray(category.path)) categoriesIds.push(...category.path)
+			if (Array.isArray(category.path))
+				categoriesIds.push(...childCategories.map(it => it.id))
 
 			query.andWhere('(it.categoriesIds)::text[] @> ARRAY[:...categoriesIds]', {
 				categoriesIds,
