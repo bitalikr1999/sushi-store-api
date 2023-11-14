@@ -54,7 +54,8 @@ export class BucketService implements IBucketService {
 				const translate = getTranslate(product.translations, Lang.uk)
 
 				product.translations = null
-				product.previewMedia.path = transformFileUrl(product.previewMedia.url)
+				if (product.previewMedia)
+					product.previewMedia.path = transformFileUrl(product.previewMedia.url)
 
 				const content = await this.contentFieldsRepository.find({
 					where: {
