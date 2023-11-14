@@ -73,4 +73,7 @@ export class CreateOrderPayloadDto {
 
 	@DtoPropertyOptional()
 	usedBonuses?: number
+
+	@DtoPropertyOptional()
+	deliveryToTime?: string
 }

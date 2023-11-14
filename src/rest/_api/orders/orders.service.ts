@@ -60,6 +60,11 @@ export class RestPublicOrdersService {
 		}
 		dto.user.fixedUserId = user.fixedUserId
 
+		let comment = `${dto.comment}`
+		if (dto.deliveryToTime) {
+			comment = `Доставка на обраний час: ${dto.deliveryToTime} \n ${comment}`
+		}
+
 		const order = await this.ordersService.create({
 			currency: Currency.UAH,
 			user: dto.user,
@@ -72,7 +77,7 @@ export class RestPublicOrdersService {
 				}
 			}),
 			shippingId: shipping.id,
-			comment: dto.comment,
+			comment: comment,
 			usedBonuses: dto.usedBonuses,
 		})
 
