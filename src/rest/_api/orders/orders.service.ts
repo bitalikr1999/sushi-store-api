@@ -15,6 +15,7 @@ import { IUsersService, USERS_SERVICE } from 'src/domain/users/typing'
 import { IMailerService, MAILER_SERVICE } from 'src/libs/mailer/typing'
 import { linksConfig } from 'src/config/links.config'
 import { Currency } from 'src/shared'
+import { defaultTo } from 'lodash'
 
 @Injectable({})
 export class RestPublicOrdersService {
@@ -62,7 +63,7 @@ export class RestPublicOrdersService {
 
 		let comment = `${dto.comment}`
 		if (dto.deliveryToTime) {
-			comment = `Доставка на обраний час: ${dto.deliveryToTime} \n ${comment}`
+			comment = `Доставка на обраний час: ${dto.deliveryToTime} \n ${defaultTo(comment, '')}`
 		}
 
 		const order = await this.ordersService.create({
