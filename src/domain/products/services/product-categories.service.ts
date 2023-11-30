@@ -47,6 +47,11 @@ export class ProductCategoriesService implements IProductCategoriesService {
 		if (!_.isEmpty(payload.translations)) {
 			await this.putTranslations(category.id, payload.translations)
 		}
+
+		if (payload.parentId) {
+			const path = await this.generatePath(category)
+			await this.productCategoriesRepository.update(category.id, { path })
+		}
 	}
 
 	public async delete(id: number) {

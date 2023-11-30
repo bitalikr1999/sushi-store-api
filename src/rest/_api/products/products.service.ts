@@ -57,7 +57,7 @@ export class ApiProductsService {
 			if (Array.isArray(childCategories))
 				categoriesIds.push(...childCategories.map(it => it.id))
 
-			console.log('categoriesIds', categoriesIds)
+			console.log('categoriesIds', childCategories)
 			query.andWhere('(it.categoriesIds)::text[] && ARRAY[:...categoriesIds]', {
 				categoriesIds,
 			})

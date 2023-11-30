@@ -74,6 +74,7 @@ export class BucketService implements IBucketService {
 					discountAmount = formatPrice((discountConfig.discount * brutoAmount) / 100)
 					discountPercent = discountConfig.discount
 				}
+
 				nettoAmount = formatPrice(brutoAmount - discountAmount)
 
 				result.brutoAmount += brutoAmount
