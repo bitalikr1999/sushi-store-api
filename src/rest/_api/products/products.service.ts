@@ -65,6 +65,8 @@ export class ApiProductsService {
 
 		if (params.withDiscount) {
 			query.andWhere('it.discount > 0')
+		} else {
+			query.andWhere('it.price > 0')
 		}
 
 		if (pagination.searchString) {
