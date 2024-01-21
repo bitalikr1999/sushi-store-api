@@ -7,6 +7,9 @@ export class GetProductsParamsDto {
 
 	@DtoPropertyOptional()
 	withDiscount?: boolean
+
+	@DtoPropertyOptional()
+	sort?: 'default' | 'price-desc' | 'price-asc'
 }
 
 export class GetProductsListItem extends ProductDto {

@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { CONTENT_FIELDS_REPOSITORY, IContentFieldRepository } from 'src/domain/content/typing'
-import { GALLERY_SERVICE } from 'src/domain/galleries/consts'
-import { IGalleryService } from 'src/domain/galleries/interface'
+
 import {
 	PRODUCTS_REPOSITORY,
 	IProductsRepository,
@@ -57,7 +56,6 @@ export class ApiProductsService {
 			if (Array.isArray(childCategories))
 				categoriesIds.push(...childCategories.map(it => it.id))
 
-			console.log('categoriesIds', childCategories)
 			query.andWhere('(it.categoriesIds)::text[] && ARRAY[:...categoriesIds]', {
 				categoriesIds,
 			})
@@ -78,6 +76,18 @@ export class ApiProductsService {
 				}),
 			)
 		}
+
+		if (params.sort) {
+			if (params.sort === 'price-asc') {
+				query.orderBy('it.price', 'ASC')
+			}
+			if (params.sort === 'price-desc') {
+				query.orderBy('it.price', 'DESC')
+			}
+		}
+		pagination.sort = null
+		pagination.sortField = null
+		console.log('sort', params.sort)
 
 		const { items, count }: any = await paginateAndGetMany(query, pagination, 'it')
 
