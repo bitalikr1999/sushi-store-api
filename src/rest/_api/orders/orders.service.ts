@@ -3,6 +3,8 @@ import {
 	BUCKET_SERVICE,
 	IBucketService,
 	IOrderService,
+	IOrdersRepository,
+	ORDERS_REPOSITORY,
 	ORDERS_SERVICE,
 } from 'src/domain/orders/typing'
 import { CreateOrderPayloadDto, OrderShippingPayloadDto } from './dto'
@@ -39,6 +41,9 @@ export class RestPublicOrdersService {
 
 	@Inject(MAILER_SERVICE)
 	private readonly mailerService: IMailerService
+
+	@Inject(ORDERS_REPOSITORY)
+	private readonly ordersRepository: IOrdersRepository
 
 	public async create(dto: CreateOrderPayloadDto, user: IRequestUser) {
 		await this.validateCreateOrderPayload(dto)
@@ -83,6 +88,8 @@ export class RestPublicOrdersService {
 		})
 
 		this.actionAfterCreateOrder(order.id)
+
+		return order.id
 	}
 
 	private async createShipping(dto: OrderShippingPayloadDto) {
@@ -153,5 +160,20 @@ export class RestPublicOrdersService {
 				orderId,
 			)}"> На сайті було створенно нове замовлення. </a>`,
 		})
+	}
+
+	public async getOrderInfo(orderId: number) {
+		const order = await this.ordersRepository
+			.createQueryBuilder('it')
+			.leftJoinAndSelect('it.orderUser', 'orderUser')
+			.leftJoinAndSelect('it.orderProducts', 'orderProducts')
+			.leftJoinAndSelect('orderProducts.product', 'product')
+			.leftJoinAndSelect('product.translations', 'productTranslations')
+			.where('it.id = :id', { id: orderId })
+			.getOne()
+
+		order.shipping = await this.shippingService.getOne(order.shippingId)
+
+		return order
 	}
 }

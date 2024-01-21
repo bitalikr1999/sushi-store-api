@@ -1,11 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common'
-import {
-	IOrderService,
-	IOrdersRepository,
-	ORDERS_REPOSITORY,
-	ORDERS_SERVICE,
-	OrderStatus,
-} from 'src/domain/orders/typing'
+import { IOrdersRepository, ORDERS_REPOSITORY, OrderStatus } from 'src/domain/orders/typing'
 import { IPagination, paginateAndGetMany, prepareSearchString } from 'src/shared'
 import { Brackets } from 'typeorm'
 import { GetOrdersParamsDto } from './dto'
@@ -15,9 +9,6 @@ import { IUsersReferralsService, USERS_REFERRAL_SERVICE } from 'src/domain/users
 
 @Injectable()
 export class RestAdminOrdersService {
-	@Inject(ORDERS_SERVICE)
-	private readonly ordersService: IOrderService
-
 	@Inject(ORDERS_REPOSITORY)
 	private readonly ordersRepository: IOrdersRepository
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post } from '@nestjs/common'
 import { RestPublicOrdersService } from './orders.service'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { CreateOrderPayloadDto } from './dto'
@@ -17,5 +17,14 @@ export class RestPublicOrdersController {
 	@Post('')
 	public put(@Body() dto: CreateOrderPayloadDto, @ReqUserData() userData: IRequestUser) {
 		return this.service.create(dto, userData)
+	}
+
+	@ApiOperation({ summary: 'Get order' })
+	@ApiResponse({
+		status: 201,
+	})
+	@Get(':orderId')
+	public get(@Param('orderId') orderId: number) {
+		return this.service.getOrderInfo(orderId)
 	}
 }

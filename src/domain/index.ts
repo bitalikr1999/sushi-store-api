@@ -11,10 +11,12 @@ import { PostsModule } from './posts/posts.module'
 import { MenuModule } from './menu/menu.module'
 import { FavoritiesModule } from './favorities/favorities.module'
 import { SettingsModule } from './settings/settings.module'
+import { ConfirmationModule } from './confirmation/confirmation.module'
 
 export const DOMAIN_MODULES = () => [
 	UsersModule.forRoot({ passwordHashSalt: getEnv('LOCAL_HASH_SALT') }),
 	SessionsModule.forRoot(),
+	ConfirmationModule.forRoot(),
 	ContentModule.forRoot(),
 	PagesModule.forRoot(),
 	MediaModule.forRoot(),
